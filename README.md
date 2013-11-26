@@ -1,8 +1,7 @@
 TrianCMS
 ========
 
-TrianCMS es un gestor de contenidos desarrollado por TrianMARC con la infuencia de DedalusCMS de truzone.org pero estruc-
-turado de una manera mas eficaz.
+TrianCMS es un gestor de contenidos desarrollado por TrianMARC con la infuencia de DedalusCMS de truzone.org pero estructurado de una manera mas eficaz.
 
 TrianCMS se encuentra en una fase de desarrollo muy temprana, pero las funcionalidades que incluye actualmente son:
 
