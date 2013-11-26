@@ -6,15 +6,16 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function obtener_seccion(){
-	global $seccion;
+	global $seccion,$seccion_pred;
 
-	if(!$_GET['seccion']) $seccion=null;
+	if(!$_GET['seccion']) $seccion=$seccion_pred;
 	else $seccion=$_GET['seccion'];
 }
 
 function comprobar_usuario(){
-	global $es_user;
+	global $es_user,$tu_cuenta;
 	if($_COOKIE['es_user']==TRUE){
+		$tu_cuenta['usuario']=$_COOKIE['user'];
 		$es_user=TRUE;
 	}
 	else
@@ -49,9 +50,6 @@ function escapa($valor,$drop = false)
 		return intval($valor);
 }
  
-function query($query){
-	return mysql_query($query);
-}
 
 function obtener_idioma($lugar,$clase,$tipo = NULL)
 {

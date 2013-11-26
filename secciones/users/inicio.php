@@ -8,16 +8,14 @@ function principal(){
 		$cont = [
 				 'seccion' => $seccion,
 				];
-		$print=incluir_html($cont,'conexion');
-		echo $print;
+		plantilla(incluir_html($cont,'conexion'));
 	 }else {
 	 
 		$nick = $_COOKIE['user'];
 		$cont = [
 				 'nick' => $nick,
 				];
-		$print=incluir_html($cont,'inicio');
-		echo $print;		
+		plantilla(incluir_html($cont,'inicio'));		
 	 }
 }
 function desconectar(){
@@ -32,8 +30,7 @@ function desconectar(){
         setcookie('user', null, -1);
         setcookie('pass', null, -1);
 		setcookie('es_user',null,-1);
-		$print=incluir_html($cont,'desconexion');
-		echo $print;
+		plantilla(incluir_html($cont,'desconexion'));
 		
 	}
 	else{
@@ -54,12 +51,10 @@ function conectar(){
 	
 	
 	if($_POST['nick']==""){
-		$print=incluir_html($cont,'error_nick');
-		echo $print;
+		plantilla(incluir_html($cont,'error_nick'));
 	}
 	elseif($_POST['pass']==""){
-		$print=incluir_html($cont,'error_pass');
-		echo $print;
+		plantilla(incluir_html($cont,'error_pass'));
 	}
 	else{
 		$user = $_POST['nick'];
@@ -73,12 +68,10 @@ function conectar(){
 			setcookie('user',$_POST['nick'],$duracion_sesion);
 			setcookie('pass',$pass_db,$duracion_sesion);
 			setcookie('es_user',TRUE,$duracion_sesion);
-			$print=incluir_html($cont,'panel_user');
-			echo $print;
+			plantilla(incluir_html($cont,'panel_user'));
 		}
 		else{
-			$print=incluir_html($cont,'pass_mal');
-			echo $print;
+			plantilla(incluir_html($cont,'pass_mal'));
 		}	
 	}
 }
@@ -90,8 +83,7 @@ function registro(){
 				 'seccion' => $seccion,
 				 'atras' => _USER_ATRAS,
 				];
-		$print=incluir_html($cont,'registro');
-		echo $print;
+		plantilla(incluir_html($cont,'registro'));
 	}
 	else{
 		header('Location: ./?seccion='.$seccion);
@@ -112,8 +104,7 @@ function registrado(){
 				 'pass_error' => _USER_ERROR_PASS_NO_COINCIDE,
 				 'atras' => _USER_ATRAS,
 				];
-			$print=incluir_html($cont,'pass_nocoincide');
-			echo $print;		
+			plantilla(incluir_html($cont,'pass_nocoincide'));
 		}
 		else{
 			$nick=$_POST['nick'];
@@ -121,8 +112,7 @@ function registrado(){
 			$email=serialize($_POST['email']);
 			$result=mysql_query("INSERT INTO ".$prefix."usuarios values ('','".escapa($nick)."','".escapa($pass)."','".escapa($email)."','1')");
 			if($result!=FALSE){
-				$print=incluir_html($cont,'registrado');
-				echo $print;
+				plantilla(incluir_html($cont,'registrado'));
 			}
 			else{
 				echo "Error de conexion";
