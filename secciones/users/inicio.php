@@ -23,12 +23,18 @@ function principal(){
 function desconectar(){
 	global $es_user;
 	if($es_user){
+		$cont = [
+			'volver' => _USER_VOLVER,
+			'desconectado' => _USER_DESCONECTADO,
+			];
 		unset($_COOKIE['user']);
         unset($_COOKIE['pass']);
         setcookie('user', null, -1);
         setcookie('pass', null, -1);
 		setcookie('es_user',null,-1);
-		echo 'Has sido desconectado';
+		$print=incluir_html($cont,'desconexion');
+		echo $print;
+		
 	}
 	else{
 		header('Location: ./?seccion='.$seccion);
