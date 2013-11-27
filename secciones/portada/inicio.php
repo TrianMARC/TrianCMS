@@ -9,29 +9,31 @@ function principal(){
 				'cabecera' => _PORTADA_ULTIMOS_ARTICULOS,
 			];
 	$modulo .= incluir_html($cont,'articulos_cabecera');
-	$result = mysql_query("SELECT a.*, b.* FROM ".$prefix."articulos a,".$prefix."usuarios b WHERE a.uid=b.id ");
+	$result = mysql_query("SELECT a.*, b.*, c.* FROM ".$prefix."articulos a,".$prefix."usuarios b,".$prefix."secciones c WHERE a.uid=b.id AND a.sid=c.sid ");
 	while($row=mysql_fetch_object($result)){
-		$cont = [
+		if($seccion == $row->seccion){
+			$cont = [
 				"titulo" => unserialize($row->titulo),
 				"resumen" => unserialize($row->resumen),
 				'imagen' => $row->imagen,
 				'escrito' => _PORTADA_ARTICULO_ESCRITO,
-				'escritor' => $row->User,
+				'escritor' => $row->user,
+				'uid' => $row->id,
 				'leermas' => _PORTADA_ARTICULO_LEER,
 			];
-		if(!$es_user){
-			$modulo .= incluir_html($cont,'articulo');
-		}
-		else{
-			if(!$es_admin){
+			if(!$es_user){
 				$modulo .= incluir_html($cont,'articulo');
 			}
 			else{
-				$cont['editar']='<div id="editar_articulo"><a href="#"><img src=./images/acciones/editar.png title="Editar" width="16px"></a></div>';
-				$modulo .= incluir_html($cont,'articulo');
+				if(!$es_admin){
+					$modulo .= incluir_html($cont,'articulo');
+				}
+				else{
+					$cont['editar']='<div id="editar_articulo"><a href="#"><img src=./images/acciones/editar.png title="Editar" width="16px"></a></div>';
+					$modulo .= incluir_html($cont,'articulo');
+				}
 			}
 		}
-		
 	};
 	
 	mysql_free_result($result);

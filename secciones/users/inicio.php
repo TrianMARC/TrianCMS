@@ -15,7 +15,7 @@ function principal(){
 		$cont = [
 				 'nick' => $nick,
 				];
-		plantilla(incluir_html($cont,'inicio'));		
+		plantilla(incluir_html($cont,'panel_user'));		
 	 }
 }
 function desconectar(){
@@ -42,7 +42,7 @@ function conectar(){
 	global $es_user,$duracion_sesion;
 	$cont = [
 				 'seccion' => $seccion,
-				 'user' => $_POST['nick'],
+				 'nick' => $_POST['nick'],
 				 'pass_inc' => _USER_ERROR_PASSWORD,
 				 'nick_vac' => _USER_ERROR_FALTA_NICK,
 				 'pass_vac' => _USER_ERROR_FALTA_PASS,
@@ -59,10 +59,10 @@ function conectar(){
 	else{
 		$user = $_POST['nick'];
 		$user = escapa($user);
-		$result = mysql_query("SELECT * FROM ".$prefix."usuarios WHERE User='". $user ."' ");
+		$result = mysql_query("SELECT * FROM ".$prefix."usuarios WHERE user='". $user ."' ");
 		$row = mysql_fetch_object($result);
 		mysql_free_result($result);
-		$pass_db = $row->Pass;
+		$pass_db = $row->pass;
 		$pass = $_POST['pass'];
 		if(password_verify($pass,$pass_db)){
 			setcookie('user',$_POST['nick'],$duracion_sesion);
@@ -142,6 +142,8 @@ case "registro":
 case "registrado":
 	registrado();
 	break;
+case "informacion":
+	informacion();
 
 }
 

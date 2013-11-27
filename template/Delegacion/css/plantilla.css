@@ -83,7 +83,7 @@ text-decoration:none;
 /*Cabecera*/
 
 .logo{
-	border-radius:80px;
+	border-radius:10px;
 	box-shadow: 2px 2px 2px #becdd3;
    -webkit-box-shadow: 2px 2px 2px #becdd3;
    -moz-box-shadow: 2px 2px 2px #becdd3;
