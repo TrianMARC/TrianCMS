@@ -15,15 +15,17 @@ function obtener_seccion(){
 function comprobar_usuario(){
 	global $es_user,$tu_cuenta,$es_admin;
 	if($_COOKIE['es_user']==TRUE){
-		$result = mysql_query("SELECT * FROM ".$prefix."usuarios WHERE User='".escapa($_COOKIE['user'])."' ");
+		$result = mysql_query("SELECT * FROM ".$prefix."usuarios WHERE user='".escapa($_COOKIE['user'])."' ");
 		$row = mysql_fetch_object($result);
 		mysql_free_result($result);
-		if(strcmp($_COOKIE['session'],$row->Pass)==0){
-			if(intval($row->Rango) >= 2) 
+		if(strcmp($_COOKIE['session'],$row->pass)==0){
+			if(intval($row->rango) >= 2) 
 			$es_admin=TRUE;
 			else
 				$es_admin=FALSE;
-			$tu_cuenta['usuario']=$_COOKIE['user'];
+			$tu_cuenta['usuario'] = $row->user;
+			$tu_cuenta['avatar'] = $row->avatar;
+			$tu_cuenta['email'] = $row->email;
 			$es_user=TRUE;
 		}
 		else{

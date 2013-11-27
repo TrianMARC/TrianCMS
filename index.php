@@ -18,11 +18,7 @@ $seccion_pred= 'portada';
 $es_user = FALSE;
 $es_admin = FALSE;
 
-$tu_cuenta = [
-				'seccion' => 'users',
-				'usuario' => '',
-				
-			];
+$tu_cuenta = [];
 
 
 include_once('./funciones/funciones.php');
@@ -40,7 +36,7 @@ else {
 
 include_once('include.php');
 
-
+mysql_close($link);
 
 ?>
 
