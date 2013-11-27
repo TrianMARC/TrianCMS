@@ -29,7 +29,7 @@ function principal(){
 					$modulo .= incluir_html($cont,'articulo');
 				}
 				else{
-					$cont['editar']='<div id="editar_articulo"><a href="#"><img src=./images/acciones/editar.png title="Editar" width="16px"></a></div>';
+					$cont['editar']='<div class="editar_articulo"><a href="#"><img src=./images/acciones/editar.png title="Editar" alt="editar" width="16px"></a></div>';
 					$modulo .= incluir_html($cont,'articulo');
 				}
 			}
