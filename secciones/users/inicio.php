@@ -26,9 +26,9 @@ function desconectar(){
 			'desconectado' => _USER_DESCONECTADO,
 			];
 		unset($_COOKIE['user']);
-        unset($_COOKIE['pass']);
+        unset($_COOKIE['session']);
         setcookie('user', null, -1);
-        setcookie('pass', null, -1);
+        setcookie('session', null, -1);
 		setcookie('es_user',null,-1);
 		plantilla(incluir_html($cont,'desconexion'));
 		
@@ -66,7 +66,7 @@ function conectar(){
 		$pass = $_POST['pass'];
 		if(password_verify($pass,$pass_db)){
 			setcookie('user',$_POST['nick'],$duracion_sesion);
-			setcookie('pass',$pass_db,$duracion_sesion);
+			setcookie('session',$pass_db,$duracion_sesion);
 			setcookie('es_user',TRUE,$duracion_sesion);
 			plantilla(incluir_html($cont,'panel_user'));
 		}
