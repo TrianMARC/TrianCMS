@@ -12,7 +12,7 @@ TrianCMS se encuentra en una fase de desarrollo muy temprana, pero las funcional
 
 Requisitos actuales del CMS:
 
-	-MYSQL 5.3
+	-MYSQL 5.5
 	-PHP 5.5
 	-Navegador compatible con HTML5 y CSS3
 	
