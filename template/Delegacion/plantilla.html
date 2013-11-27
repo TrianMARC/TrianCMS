@@ -1,37 +1,39 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>$mostrar[sitename]</title>
-<meta http-equiv="Content-Type" content="text/html">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="keywords" content="delegacion alumnos esii uclm politecnica albacete">
 <meta name="description" content="Delegacion de Alumos de la ESII del Campus de Albacete de la UCLM" >
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
 <!-- Codigo que pasara a fichero plantilla.css -->
 <link rel="stylesheet" type="text/css" href="./template/Delegacion/css/plantilla.css">
 <link rel="stylesheet" type="text/css" href="./template/Delegacion/css/general.css">
 <link rel="icon" href="./images/logo.jpg" type="image/x-jpg" />
 </head>
 <body>
-	<div id="cabecera">
+	<header id="cabecera">
 	<a href="./index.php">
-		<div id="logoimg"><img src="./images/logo.jpg" class="logo" width="150px"></div>
+		<div id="logoimg"><img src="./images/logo.jpg" class="logo" width="150" alt="logo" title="logo"></div>
 		<div id="logotxt"><font color="red">D</font>elegación de <font color="red">A</font>lumnos</div>
 		<div id="logosubtxt"><font color="red">E</font>scuela <font color="red">S</font>uperior de <font color="red">I</font>ngenieria <font color="red">I</font>nformática de <font color="red">A</font>lbacete</div>
 		<div class="limpiarizq"></div>
 	</a>
-	</div>
+	</header>
 	<div class="espacio"></div>
-	<div id="menu">
+	<aside id="menu">
 		<ul>
-			<a href="./"><li>Inicio &raquo;</li></a>
-			<a href="#"><li>La delegación &raquo;</li></a>
-			<a href="#"><li>Actividades &raquo;</li></a>
-			<a href="#"><li>Miembros &raquo;</li></a>
-			<a href="./?seccion=users"><li>Acceso &raquo;</li></a>
+			<li><a href="./">Inicio &raquo;</li></a>
+			<li><a href="#">La delegación &raquo;</li></a>
+			<li><a href="#">Actividades &raquo;</li></a>
+			<li><a href="#">Miembros &raquo;</li></a>
+			<li><a href="./?seccion=users">Acceso &raquo;</li></a>
 		</ul>
-	</div>
-	<div id="contenido">$mostrar[modulo]
-	</div>
+	</aside>
+	<section id="contenido">$mostrar[modulo]
+	</section>
 	<div class="limpiartodo"></div>
+	<footer></footer>
 	
 </body>
 </html>
