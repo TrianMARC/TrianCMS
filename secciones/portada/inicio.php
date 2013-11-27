@@ -3,14 +3,14 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function principal(){
-	global $es_user,$es_admin,$seccion,$prefix;
+	global $link, $es_user,$es_admin,$seccion,$prefix;
 	$modulo = '';
 	$cont = [
 				'cabecera' => _PORTADA_ULTIMOS_ARTICULOS,
 			];
 	$modulo .= incluir_html($cont,'articulos_cabecera');
-	$result = mysql_query("SELECT a.*, b.*, c.* FROM ".$prefix."articulos a,".$prefix."usuarios b,".$prefix."secciones c WHERE a.uid=b.id AND a.sid=c.sid ");
-	while($row=mysql_fetch_object($result)){
+	$result = mysqli_query($link,"SELECT a.*, b.*, c.* FROM ".$prefix."articulos a,".$prefix."usuarios b,".$prefix."secciones c WHERE a.uid=b.id AND a.sid=c.sid ");
+	while($row=mysqli_fetch_object($result)){
 		if($seccion == $row->seccion){
 			$cont = [
 				"titulo" => unserialize($row->titulo),
@@ -36,21 +36,21 @@ function principal(){
 		}
 	};
 	
-	mysql_free_result($result);
+	mysqli_free_result($result);
 	plantilla($modulo,'Novedades');
 }
 
 function insertar(){
-	global $prefix;
+	global $link, $prefix;
 	$titulo=serialize("Articulo de prueba");
 	$resumen=serialize("Este es un articulo para ver si se carga todo bien");
 	$contenido=serialize("Este es un articulo para ver si se carga todo bien Este es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bien");
 	$cid='1';
 	$uid='6';
-	$result=mysql_query("INSERT INTO ".$prefix."articulos values ('','".$titulo."','".$resumen."','".$contenido."','imagen.jpg','".$cid."','".$uid."') ");
+	$result=mysqli_query($link,"INSERT INTO ".$prefix."articulos values ('','".$titulo."','".$resumen."','".$contenido."','imagen.jpg','".$cid."','".$uid."') ");
 	if($result) $modulo = "INSERT REALIZADO CORRECTAMENTE";
-	else $modulo = "INSERT FALLADO".mysql_error();
-	mysql_free_result($result);
+	else $modulo = "INSERT FALLADO".mysqli_error();
+	mysqli_free_result($result);
 	
 	plantilla($modulo,'Novedades');
 };

@@ -6,18 +6,18 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function obtener_seccion(){
-	global $seccion,$seccion_pred;
+	global $link,$seccion,$seccion_pred;
 
 	if(!$_GET['seccion']) $seccion=$seccion_pred;
 	else $seccion=$_GET['seccion'];
 }
 
 function comprobar_usuario(){
-	global $es_user,$tu_cuenta,$es_admin;
+	global $link,$es_user,$tu_cuenta,$es_admin;
 	if($_COOKIE['es_user']==TRUE){
-		$result = mysql_query("SELECT * FROM ".$prefix."usuarios WHERE user='".escapa($_COOKIE['user'])."' ");
-		$row = mysql_fetch_object($result);
-		mysql_free_result($result);
+		$result = mysqli_query($link,"SELECT * FROM ".$prefix."usuarios WHERE user='".escapa($_COOKIE['user'])."' ");
+		$row = mysqli_fetch_object($result);
+		mysqli_free_result($result);
 		if(strcmp($_COOKIE['session'],$row->pass)==0){
 			if(intval($row->rango) >= 2) 
 			$es_admin=TRUE;
@@ -42,7 +42,7 @@ function comprobar_usuario(){
 }
 
 function incluir_html($cont,$html){
-	global $seccion;
+	global $link,$seccion;
 	 $thefile = file_get_contents('./secciones/'.$seccion.'/html/'.$html.'.html');
 	 $thefile = str_replace('"', '\"', $thefile);
 	 $thefile = preg_replace('#\{([^\}\\n\\r]+)\}#is', '".$1."', $thefile);
@@ -62,9 +62,10 @@ function encriptar($password, $digito = 7) {
  
 function escapa($valor)
 {
+	global $link;
 	//if(get_magic_quotes_gpc()) $valor = stripslashes($valor);
 	if (!is_numeric($valor))
-		return mysql_real_escape_string($valor);
+		return mysqli_real_escape_string($link,$valor);
 	else
 		return intval($valor);
 }
@@ -72,7 +73,7 @@ function escapa($valor)
 
 function obtener_idioma($lugar,$clase,$tipo = NULL)
 {
-  	global $idioma;
+  	global $link,$idioma;
 
     if ($clase == 0) {
 		if (file_exists('./language/' . $idioma . '/blocks/' . $lugar . '.php'))
