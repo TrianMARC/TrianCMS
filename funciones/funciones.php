@@ -41,7 +41,7 @@ function encriptar($password, $digito = 7) {
 	return password_hash($password, PASSWORD_BCRYPT, $options);
 }
  
-function escapa($valor,$drop = false)
+function escapa($valor)
 {
 	//if(get_magic_quotes_gpc()) $valor = stripslashes($valor);
 	if (!is_numeric($valor))
