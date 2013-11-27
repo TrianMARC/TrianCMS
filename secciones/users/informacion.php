@@ -48,7 +48,7 @@ function editar_informacion(){
 				'enviar' => _ENVIAR,
 				'atras' => _VOLVER_ATRAS,
 		];	
-		plantilla(incluir_html($cont,editar_perfil);
+		plantilla(incluir_html($cont,editar_perfil));
 	}
 	else header('Location: ./?seccion='.$seccion);
 

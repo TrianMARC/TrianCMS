@@ -1,27 +1,27 @@
 
 /*Portada*/
 
-#img_articulo{
+.img_articulo{
 	border-radius: 5px;
 }
 
-#div_img_articulo{
+.div_img_articulo{
 	float:left;
 	margin-right:10px;
 }
 
-#editar_articulo{
+.editar_articulo{
 	float:right;
 	margin-right:60px;
 }
 
-#escrito_por{
+.escrito_por{
 	margin-top:30px;
 	font-size:14px;
 
 }
 
-#fecha_articulo{
+.fecha_articulo{
 	text-align:right;
 	width:60%;
 	margin-top:30px;

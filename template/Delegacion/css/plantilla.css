@@ -46,20 +46,23 @@ body{
 	list-style-type: none;
 }
 
-#menu ul a{
+#menu ul li{
+	padding:10px;
+}
+
+#menu ul  li a{
 
 text-decoration:none;
 
 }
 
-#menu ul a:visited{
+#menu ul li a:visited{
 text-decoration:none;
 }
 
-#menu ul a li{
-	
+#menu ul li a{
+	width:100%;
 	margin-left:-10px;
-	border-top: 1px solid #fff;
 	color:#fff;
 	padding:10px;
 	text-transform: uppercase;
@@ -67,11 +70,7 @@ text-decoration:none;
 	font-weight: bold;
 }
 
-#menu ul a li:first-child{
-	border:none;
-}
-
-#menu ul a:hover li{
+#menu ul li a:hover {
 	background: #838484;
 	border-radius:3px;
 	transition-property:background;
