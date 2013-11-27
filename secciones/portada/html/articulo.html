@@ -1,6 +1,10 @@
 <div style="margin-left:20px;margin-top:10px;">
-	<div style="float:left;"><img src="./images/articulos/$cont[imagen]" width="150px" ></div>
-	<div>Titulo: $cont[titulo]</div>
+	<div id="div_img_articulo"><img id="img_articulo" src="./images/articulos/$cont[imagen]" width="150px" ></div>
+	$cont[editar]
+	<div><b>$cont[titulo]</b></div>
+	<div class="limpiardcha"></div>
 	<div>$cont[resumen]</div>
-	<div class="limpiar_izq"></div>
+	<div id="escrito_por">$cont[escrito] $cont[escritor]. </div>
+	<div id="fecha_articulo">$cont[fecha]</div>
+	<div class="limpiarizq"></div>
 </div>

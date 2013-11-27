@@ -3,20 +3,35 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function principal(){
-	global $es_user,$seccion,$prefix;
+	global $es_user,$es_admin,$seccion,$prefix;
 	$modulo = '';
 	$cont = [
 				'cabecera' => _PORTADA_ULTIMOS_ARTICULOS,
 			];
 	$modulo .= incluir_html($cont,'articulos_cabecera');
-	$result = mysql_query("SELECT * FROM ".$prefix."articulos ");
+	$result = mysql_query("SELECT a.*, b.* FROM ".$prefix."articulos a,".$prefix."usuarios b WHERE a.uid=b.id ");
 	while($row=mysql_fetch_object($result)){
 		$cont = [
 				"titulo" => unserialize($row->titulo),
 				"resumen" => unserialize($row->resumen),
 				'imagen' => $row->imagen,
-		];
-		$modulo .= incluir_html($cont,'articulo');
+				'escrito' => _PORTADA_ARTICULO_ESCRITO,
+				'escritor' => $row->User,
+				'leermas' => _PORTADA_ARTICULO_LEER,
+			];
+		if(!$es_user){
+			$modulo .= incluir_html($cont,'articulo');
+		}
+		else{
+			if(!$es_admin){
+				$modulo .= incluir_html($cont,'articulo');
+			}
+			else{
+				$cont['editar']='<div id="editar_articulo"><a href="#"><img src=./images/acciones/editar.png title="Editar" width="16px"></a></div>';
+				$modulo .= incluir_html($cont,'articulo');
+			}
+		}
+		
 	};
 	
 	mysql_free_result($result);

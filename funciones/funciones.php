@@ -13,10 +13,27 @@ function obtener_seccion(){
 }
 
 function comprobar_usuario(){
-	global $es_user,$tu_cuenta;
+	global $es_user,$tu_cuenta,$es_admin;
 	if($_COOKIE['es_user']==TRUE){
-		$tu_cuenta['usuario']=$_COOKIE['user'];
-		$es_user=TRUE;
+		$result = mysql_query("SELECT * FROM ".$prefix."usuarios WHERE User='".escapa($_COOKIE['user'])."' ");
+		$row = mysql_fetch_object($result);
+		mysql_free_result($result);
+		if(strcmp($_COOKIE['session'],$row->Pass)==0){
+			if(intval($row->Rango) >= 2) 
+			$es_admin=TRUE;
+			else
+				$es_admin=FALSE;
+			$tu_cuenta['usuario']=$_COOKIE['user'];
+			$es_user=TRUE;
+		}
+		else{
+			unset($_COOKIE['user']);
+			unset($_COOKIE['pass']);
+			setcookie('user', null, -1);
+			setcookie('session', null, -1);
+			setcookie('es_user',null,-1);
+			echo "Intento de hackeo de cuenta, tu ip ha sido guardada en el sistema, se te revocará el acceso";
+		}
 	}
 	else
 		$es_user=FALSE;

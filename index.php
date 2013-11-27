@@ -16,6 +16,7 @@ $seccion_pred= 'portada';
 
 /*Definimos la variable de identificacion de usuario a false*/
 $es_user = FALSE;
+$es_admin = FALSE;
 
 $tu_cuenta = [
 				'seccion' => 'users',
