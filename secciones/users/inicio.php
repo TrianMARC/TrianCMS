@@ -3,11 +3,7 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function principal(){
-<<<<<<< HEAD
 	global $link,$es_user,$seccion,$usar_cookies;
-=======
-	global $link,$es_user,$seccion;
->>>>>>> master
 	if(!$es_user){
 		if(!$usar_cookies){
 			$print = "Es necesario el uso de cookies para poder conectarte.";
