@@ -6,8 +6,10 @@ body{
 
 #cabecera{
 	width:100%;
-	height:200px;
+	height:225px;
 	margin:0;
+	color:#000;
+	font-family: sans-serif;
 	border-bottom:1px solid #a4abae;
 	box-shadow: 0 2px 3px #7b7b7b;
 	background: rgb(246,248,249); /* Old browsers */
@@ -101,6 +103,43 @@ body{
 	color:#000;
 	font-size:36px;
 	font-family: sans-serif;
+}
+
+#bloquescentrales {
+	background-color: #CCC;
+	float: left;
+	height: auto;
+	margin-left:20px;
+	margin-top: 20px;
+	width: 65%;
+}
+#modulo {
+	float: left;
+	height: auto;
+	margin-top: 20px;
+	width: 65%;
+}
+
+#bloquesinferiores{
+	background-color: #CCC;
+	float:left;
+	height: auto;
+	margin-left:20px;
+	margin-top: 20px;
+	width: 67%;
+}
+#sider2 {
+	float: right;
+	height: auto;
+	margin-left:20px;
+	margin-top:20px;
+	width: 30%;
+}
+marquee {
+	alignment-adjust:central;
+	margin-left:20px;
+	margin-right:20px;
+	width:98.5%;
 }
 
 /*Clases genéricas */

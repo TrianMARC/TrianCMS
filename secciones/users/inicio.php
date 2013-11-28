@@ -4,7 +4,9 @@ if (!defined('Verificado'))
 
 function principal(){
 	global $link,$es_user,$seccion,$usar_cookies;
+	
 	if(!$es_user){
+		$titulo = 'Con&eacute;ctate';
 		if(!$usar_cookies){
 			$print = "Es necesario el uso de cookies para poder conectarte.";
 			plantilla($print);		
@@ -13,16 +15,16 @@ function principal(){
 			$cont = [
 						'seccion' => $seccion,
 					];
-			plantilla(incluir_html($cont,'conexion'));
+			plantilla(incluir_html($cont,'conexion'),$titulo);
 		
 		}
 	 }else {
-	 
+		$titulo = 'Panel de Usuario';
 		$nick = $_COOKIE['user'];
 		$cont = [
 				 'nick' => $nick,
 				];
-		plantilla(incluir_html($cont,'panel_user'));		
+		plantilla(incluir_html($cont,'panel_user'),$titulo);		
 	 }
 }
 function desconectar(){
@@ -66,16 +68,16 @@ function conectar(){
 	else{
 		$user = $_POST['nick'];
 		$user = escapa($user);
-		$result = mysqli_query($link,"SELECT * FROM ".$prefix."usuarios WHERE user='". $user ."' ");
+		$result = query("SELECT * FROM ".$prefix."usuarios WHERE user='". $user ."' ");
 		$row = mysqli_fetch_object($result);
-		mysqli_free_result($result);
+		mysqli_free_result($result);;
 		$pass_db = $row->pass;
 		$pass = $_POST['pass'];
 		if(password_verify($pass,$pass_db)){
 			setcookie('user',$_POST['nick'],$duracion_sesion);
 			setcookie('session',$pass_db,$duracion_sesion);
 			setcookie('es_user',TRUE,$duracion_sesion);
-			plantilla(incluir_html($cont,'panel_user'));
+			header('Location: ./?regresar=1');
 		}
 		else{
 			plantilla(incluir_html($cont,'pass_mal'));
@@ -99,33 +101,58 @@ function registro(){
 
 
 function registrado(){
-	global $link,$es_user,$seccion;
+	global $es_user,$seccion,$prefix;
 	if(!$es_user){
-		$cont = [
-				 'seccion' => $seccion,
-				 'atras' => _USER_ATRAS,
-				 'registrado' => _USER_REGISTRADO,
-				];
-		if($_POST['pass'] != $_POST['pass_confirm']){
-		$cont = [
-				 'pass_error' => _USER_ERROR_PASS_NO_COINCIDE,
-				 'atras' => _USER_ATRAS,
-				];
-			plantilla(incluir_html($cont,'pass_nocoincide'));
-		}
-		else{
-			$nick=$_POST['nick'];
-			$pass=encriptar($_POST['pass']);
-			$email=serialize($_POST['email']);
-			$result=mysqli_query($link,"INSERT INTO ".$prefix."usuarios values ('','".escapa($nick)."','".escapa($pass)."','".escapa($email)."','1')");
-			if($result!=FALSE){
-				plantilla(incluir_html($cont,'registrado'));
+	
+		$result1=query("SELECT * from ".$prefix."usuarios WHERE user='".escapa($_POST['nick'])."' ");
+		$row1=mysqli_fetch_object($result1);
+		mysqli_free_result($result1);
+		if(strcmp($row1->user,$_POST['nick'])!=0){
+			$result1=query("SELECT * from ".$prefix."usuarios WHERE email='".escapa(serialize($_POST['email']))."' ");
+			$row1=mysqli_fetch_object($result1);
+			mysqli_free_result($result1);
+			if(strcmp(unserialize($row1->email),$_POST['email'])!=0){
+		
+				$cont = [
+					'seccion' => $seccion,
+					'atras' => _USER_ATRAS,
+					'registrado' => _USER_REGISTRADO,
+					];
+				if($_POST['pass'] != $_POST['pass_confirm']){
+					$cont = [
+						'pass_error' => _USER_ERROR_PASS_NO_COINCIDE,
+						'atras' => _USER_ATRAS,
+						];
+					plantilla(incluir_html($cont,'pass_nocoincide'));
+				}
+				else{
+					$nick=$_POST['nick'];
+					$pass=encriptar($_POST['pass']);
+					$email=serialize($_POST['email']);
+					$result=query("INSERT INTO ".$prefix."usuarios values ('','".escapa($nick)."','".escapa($pass)."','".escapa($email)."','','','1')");
+					if($result===TRUE){
+						plantilla(incluir_html($cont,'registrado'));
+					}
+					else{
+						echo "Error de conexion al insertar. ".mysqli_error();
+					}
+					mysqli_free_result($result);
+				}
 			}
 			else{
-				echo "Error de conexion";
+				$cont = [
+					'mail_existe' => _USER_ERROR_MAIL_EXISTE,
+					'atras' => _USER_ATRAS,
+					];
+				plantilla(incluir_html($cont,'mail_existe'));
 			}
-			mysqli_free_result($result);
-			
+		}
+		else{
+			$cont = [
+					'user_existe' => _USER_ERROR_USER_EXISTE,
+					'atras' => _USER_ATRAS,
+					];
+				plantilla(incluir_html($cont,'user_existe'));
 		}
 	}
 	else{
@@ -151,6 +178,10 @@ case "registrado":
 	break;
 case "informacion":
 	informacion();
+	break;
+case "editar":
+	editar_informacion();
+	break;
 
 }
 

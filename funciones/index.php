@@ -38,6 +38,7 @@ case cookies_comprobadas();
 }
 
 if(intval($_GET['regresar'])==1) { $regresar=1; }
+echo $regresar;
 
 obtener_seccion();
 comprobar_usuario();

@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>$mostrar[sitename]</title>
+<title>$mostrar[sitename] $mostrar[pagetitle]</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="keywords" content="delegacion alumnos esii uclm politecnica albacete">
 <meta name="description" content="Delegacion de Alumos de la ESII del Campus de Albacete de la UCLM" >
 
 <!-- Codigo que pasara a fichero plantilla.css -->
-<link rel="stylesheet" type="text/css" href="./template/Delegacion/css/plantilla.css">
-<link rel="stylesheet" type="text/css" href="./template/Delegacion/css/general.css">
+<link rel="stylesheet" type="text/css" href="./template/$mostrar[template]/css/plantilla.css">
+<link rel="stylesheet" type="text/css" href="./template/$mostrar[template]/css/general.css">
 <link rel="icon" href="./images/logo.jpg" type="image/x-jpg" />
+<script type="text/javascript" src="./template/$mostrar[template]/js/twitter.js"></script>
+$mostrar[regresar]
+
 </head>
 <body>
 	<header id="cabecera">
@@ -19,6 +22,7 @@
 		<div id="logosubtxt"><b style="color:red">E</b>scuela <b style="color:red">S</b>uperior de <b style="color:red">I</b>ngenieria <b style="color:red">I</b>nformática de <b style="color:red">A</b>lbacete</div>
 		<div class="limpiarizq"></div>
 	</a>
+	$mostrar[user]
 	</header>
 	<div class="espacio"></div>
 	<aside id="menu">
@@ -30,7 +34,24 @@
 			<li><a href="./?seccion=users">Acceso &raquo;</a></li>
 		</ul>
 	</aside>
-	<section id="contenido">$mostrar[modulo]
+<section id="contenido">
+		
+		<marquee >Ejemplo para el marquee....</marquee>
+
+		<!-- Barra Derecha  -->
+		<div id="sider2" >
+		<!--//Twitter//  -->
+			<a class="twitter-timeline" href="https://twitter.com/DA_ESII" data-widget-id="405694484379217920">Tweets por @DA_ESII</a>
+			
+		</div>
+
+		<!-- Contenido -->
+			<div id="bloquescentrales">	</div>
+
+		<div id="modulo">$mostrar[regresando] $mostrar[modulo]</div>
+
+		<div id="bloquesinferiores"></div>
+		
 	</section>
 	<div class="limpiartodo"></div>
 	<footer></footer>
