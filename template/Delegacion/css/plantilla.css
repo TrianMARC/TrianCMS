@@ -25,8 +25,9 @@ body{
 
 }
 #contenido{
-	width:81%;
+	width:80%;
 	padding:20px;
+	margin:0;
 	background: #FFFFFF;
 	height:100%;
 	float:right;
@@ -38,31 +39,26 @@ body{
 /*Menú lateral */
 #menu{
 	float:left;
-	width:16%;	
-	margin: auto;
-	margin-left:-20px;
+	width:17%;	
+	margin: 0;
+	margin-left:-30px;
 }
 #menu ul{
+	width:100%;
 	list-style-type: none;
 }
 
 #menu ul li{
 	padding:10px;
-}
-
-#menu ul  li a{
-
-text-decoration:none;
-
+	list-style:none;
 }
 
 #menu ul li a:visited{
-text-decoration:none;
+	text-decoration:none;
 }
 
 #menu ul li a{
-	width:100%;
-	margin-left:-10px;
+	text-decoration:none;
 	color:#fff;
 	padding:10px;
 	text-transform: uppercase;

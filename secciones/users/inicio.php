@@ -3,7 +3,7 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function principal(){
-	global $es_user,$seccion;
+	global $link,$es_user,$seccion;
 	if(!$es_user){
 		$cont = [
 				 'seccion' => $seccion,
@@ -19,7 +19,7 @@ function principal(){
 	 }
 }
 function desconectar(){
-	global $es_user;
+	global $link,$es_user;
 	if($es_user){
 		$cont = [
 			'volver' => _USER_VOLVER,
@@ -39,7 +39,7 @@ function desconectar(){
 }
 
 function conectar(){
-	global $es_user,$duracion_sesion;
+	global $link,$es_user,$duracion_sesion;
 	$cont = [
 				 'seccion' => $seccion,
 				 'nick' => $_POST['nick'],
@@ -59,9 +59,9 @@ function conectar(){
 	else{
 		$user = $_POST['nick'];
 		$user = escapa($user);
-		$result = mysql_query("SELECT * FROM ".$prefix."usuarios WHERE user='". $user ."' ");
-		$row = mysql_fetch_object($result);
-		mysql_free_result($result);
+		$result = mysqli_query($link,"SELECT * FROM ".$prefix."usuarios WHERE user='". $user ."' ");
+		$row = mysqli_fetch_object($result);
+		mysqli_free_result($result);
 		$pass_db = $row->pass;
 		$pass = $_POST['pass'];
 		if(password_verify($pass,$pass_db)){
@@ -77,7 +77,7 @@ function conectar(){
 }
 
 function registro(){
-	global $es_user,$seccion;
+	global $link,$es_user,$seccion;
 	if(!$es_user){
 		$cont = [
 				 'seccion' => $seccion,
@@ -92,7 +92,7 @@ function registro(){
 
 
 function registrado(){
-	global $es_user,$seccion;
+	global $link,$es_user,$seccion;
 	if(!$es_user){
 		$cont = [
 				 'seccion' => $seccion,
@@ -110,14 +110,14 @@ function registrado(){
 			$nick=$_POST['nick'];
 			$pass=encriptar($_POST['pass']);
 			$email=serialize($_POST['email']);
-			$result=mysql_query("INSERT INTO ".$prefix."usuarios values ('','".escapa($nick)."','".escapa($pass)."','".escapa($email)."','1')");
+			$result=mysqli_query($link,"INSERT INTO ".$prefix."usuarios values ('','".escapa($nick)."','".escapa($pass)."','".escapa($email)."','1')");
 			if($result!=FALSE){
 				plantilla(incluir_html($cont,'registrado'));
 			}
 			else{
 				echo "Error de conexion";
 			}
-			mysql_free_result($result);
+			mysqli_free_result($result);
 			
 		}
 	}

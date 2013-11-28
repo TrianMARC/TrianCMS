@@ -36,7 +36,7 @@ else {
 
 include_once('include.php');
 
-mysql_close($link);
+mysqli_close($link);
 
 ?>
 
