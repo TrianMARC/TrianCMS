@@ -41,6 +41,34 @@ function comprobar_usuario(){
 		$es_user=FALSE;
 }
 
+function comprobar_cookies(){
+	
+	global $usar_cookies,$cook_com;
+	$usar_cookies=$_COOKIE['cookies_acept'];
+	if($usar_cookies==FALSE){
+		$print = '<div style="margin:10px;margin-left:100px;font-family:sans-serif;"><img style="float:left" src="./images/cookies.png" alt="cookies" width="64" ><form method="post" action="./?cookies=aceptadas" name="cook" >Este sitio usa cookies para almacenar los datos de los usuarios,
+			para que la web funcione correctamente te recomendamos aceptar.<br>
+			<input type="hidden" name="cookiesaceptadas" value="1">
+			<input type="submit" name="aceptar" value="Aceptar"></form></div>';
+		echo $print;
+	}
+	
+}
+function cookies_comprobadas(){
+	global $usar_cookies,$cook_com,$cookies,$duracion_sesion;
+	
+	$cookies=$_POST['cookiesaceptadas'];
+	if($cookies==1){
+		$cook_com = TRUE;
+		setcookie('cookies_acept',TRUE,time()+3600*24);
+		header('Location: ./');
+	
+	}
+	else{
+		if ($cookies!=0) $cook_com = TRUE;
+	}
+}
+
 function incluir_html($cont,$html){
 	global $link,$seccion;
 	 $thefile = file_get_contents('./secciones/'.$seccion.'/html/'.$html.'.html');

@@ -7,7 +7,9 @@ $duracion_sesion=NULL;
 
 include_once('config.php');
 
-
+$usar_cookies=FALSE;
+$cook_com=FALSE;
+$cookies = 0;
 
 /*Variable global para indicar la zona en la que nos encontramos*/
 $seccion = NULL;
@@ -22,6 +24,15 @@ $tu_cuenta = [];
 
 
 include_once('./funciones/funciones.php');
+
+comprobar_cookies();
+
+
+switch($_GET['cookies']){
+
+case cookies_comprobadas();
+	break;
+}
 
 obtener_seccion();
 comprobar_usuario();

@@ -3,12 +3,19 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function principal(){
-	global $link,$es_user,$seccion;
+	global $link,$es_user,$seccion,$usar_cookies;
 	if(!$es_user){
-		$cont = [
-				 'seccion' => $seccion,
-				];
-		plantilla(incluir_html($cont,'conexion'));
+		if(!$usar_cookies){
+			$print = "Es necesario el uso de cookies para poder conectarte.";
+			plantilla($print);		
+		}else{
+	
+			$cont = [
+						'seccion' => $seccion,
+					];
+			plantilla(incluir_html($cont,'conexion'));
+		
+		}
 	 }else {
 	 
 		$nick = $_COOKIE['user'];
