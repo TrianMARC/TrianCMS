@@ -31,22 +31,25 @@ function informacion(){
 	
 }
 function editar_informacion(){
-	global $link, $seccion,$es_user,$es_admin,$prefix,$tu_cuenta;
+	global $link, $seccion,$es_user,$prefix,$tu_cuenta;
 	$uid = 0;
 	$uid = $_GET['id'];
-	$result=mysqli_query($link,"SELECT * FROM ".$prefix."usuarios WHERE id='".escapa($uid)."' ");
+	$result=mysqli_query($link,"SELECT * FROM ".$prefix."usuarios WHERE id='".$uid."' ");
 	$row=mysqli_fetch_object($result);
 	mysqli_free_result($result);
-	if(strcmp($row->user,$tu_cuenta['usuario'])){
+
+	if(strcmp($row->user,$tu_cuenta['usuario']) == 0){
 		$cont = [
+				'uid' => $row->id,
 				'c_user' => _USUARIO_CAMPO_USUARIO,
 				'user' => $row->user,
 				'c_email' => _USUARIO_CAMPO_EMAIL,
-				'email' => $row->email,
+				'email' => unserialize($row->email),
 				'c_pass' => _USUARIO_CAMPO_PASS,
 				'c_pass_conf' => _USUARIO_CAMPO_PASS_CONFIRMAR,
 				'enviar' => _ENVIAR,
 				'atras' => _VOLVER_ATRAS,
+				'guardar' => _GUARDAR,
 		];	
 		plantilla(incluir_html($cont,editar_perfil));
 	}
@@ -55,6 +58,10 @@ function editar_informacion(){
 }
 
 function informacion_editada(){
+		global $link, $seccion,$es_user,$prefix,$tu_cuenta;
+
+	$id=$_POST['uid'];
+	
 /*Por implementar*/
 }
 

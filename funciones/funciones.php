@@ -14,6 +14,7 @@ function obtener_seccion(){
 
 function comprobar_usuario(){
 	global $link,$es_user,$tu_cuenta,$es_admin;
+	
 	if($_COOKIE['es_user']==TRUE){
 		$result = mysqli_query($link,"SELECT * FROM ".$prefix."usuarios WHERE user='".escapa($_COOKIE['user'])."' ");
 		$row = mysqli_fetch_object($result);
@@ -97,7 +98,22 @@ function escapa($valor)
 	else
 		return intval($valor);
 }
- 
+
+function query($consulta)
+{
+	global $link;
+	$result=mysqli_query($link,$consulta);
+	return $result;
+	
+}
+
+
+function cerrar_query($result)
+{
+	mysqli_free_result($result);
+	
+	
+}
 
 function obtener_idioma($lugar,$clase,$tipo = NULL)
 {
