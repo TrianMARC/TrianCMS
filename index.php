@@ -7,7 +7,9 @@ $duracion_sesion=NULL;
 
 include_once('config.php');
 
-
+$usar_cookies=FALSE;
+$cook_com=FALSE;
+$cookies = 0;
 
 /*Variable global para indicar la zona en la que nos encontramos*/
 $seccion = NULL;
@@ -20,23 +22,39 @@ $es_admin = FALSE;
 
 $tu_cuenta = [];
 
+$regresar = 0;
+
+
 
 include_once('./funciones/funciones.php');
+
+$mostrar_cookies=FALSE;
+
+comprobar_cookies();
+
+
+switch($_GET['cookies']){
+
+case cookies_comprobadas();
+	break;
+}
+
+if(intval($_GET['regresar'])==1) { $regresar=1; }
 
 obtener_seccion();
 comprobar_usuario();
 
 
+
 if($seccion==NULL) {
-	$fichero=$ruta;
+	$fichero='./';
 }
 else {	
-	$fichero=$ruta.'secciones/'.$seccion;
+	$fichero='./secciones/'.$seccion;
 	}
 
 include_once('include.php');
 
-mysql_close($link);
-
+mysqli_close($link);
 ?>
 

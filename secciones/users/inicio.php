@@ -3,27 +3,48 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function principal(){
-	global $es_user,$seccion;
+	global $link,$es_user,$seccion,$usar_cookies,$tu_cuenta;
+	
 	if(!$es_user){
-		$cont = [
-				 'seccion' => $seccion,
-				];
-		plantilla(incluir_html($cont,'conexion'));
+		$titulo = 'Con&eacute;ctate';
+		if(!$usar_cookies){
+			$print = "Es necesario el uso de cookies para poder conectarte.";
+			plantilla($print);		
+		}else{
+	
+			$cont = [
+						'seccion' => $seccion,
+					];
+			plantilla(incluir_html($cont,'conexion'),$titulo);
+		
+		}
 	 }else {
-	 
-		$nick = $_COOKIE['user'];
+		$titulo = 'Panel de Usuario';
+		$user = $tu_cuenta['usuario'];
+		$result = query("SELECT * FROM ".$config['prefix']."usuarios WHERE user='". $user ."' ");
+		$row = mysqli_fetch_object($result);
+		mysqli_free_result($result);
+		$result2=mysqli_query($link,"SELECT * FROM ".$config['prefix']."usuarios_rangos WHERE id='".$row->rango."' ");
+		$row2=mysqli_fetch_object($result2);
+		mysqli_free_result($result2);
 		$cont = [
-				 'nick' => $nick,
+				 'nick' => $user,
+				 'uid' => $row->id,
+				 'avatar' => $row->avatar,
+				 'seccion' => $seccion,
+				 'email' => unserialize($row->email),
+				 'rango' => $row2->nombre,
 				];
-		plantilla(incluir_html($cont,'panel_user'));		
+		plantilla(incluir_html($cont,'panel_user'),$titulo);		
 	 }
 }
 function desconectar(){
-	global $es_user;
+	global $link,$es_user,$seccion;
 	if($es_user){
 		$cont = [
 			'volver' => _USER_VOLVER,
 			'desconectado' => _USER_DESCONECTADO,
+			'seccion' => $seccion,
 			];
 		unset($_COOKIE['user']);
         unset($_COOKIE['session']);
@@ -39,7 +60,7 @@ function desconectar(){
 }
 
 function conectar(){
-	global $es_user,$duracion_sesion;
+	global $link,$es_user,$config;
 	$cont = [
 				 'seccion' => $seccion,
 				 'nick' => $_POST['nick'],
@@ -59,16 +80,16 @@ function conectar(){
 	else{
 		$user = $_POST['nick'];
 		$user = escapa($user);
-		$result = mysql_query("SELECT * FROM ".$prefix."usuarios WHERE user='". $user ."' ");
-		$row = mysql_fetch_object($result);
-		mysql_free_result($result);
+		$result = query("SELECT * FROM ".$config['prefix']."usuarios WHERE user='". $user ."' ");
+		$row = mysqli_fetch_object($result);
+		mysqli_free_result($result);
 		$pass_db = $row->pass;
 		$pass = $_POST['pass'];
 		if(password_verify($pass,$pass_db)){
-			setcookie('user',$_POST['nick'],$duracion_sesion);
-			setcookie('session',$pass_db,$duracion_sesion);
-			setcookie('es_user',TRUE,$duracion_sesion);
-			plantilla(incluir_html($cont,'panel_user'));
+			setcookie('user',$_POST['nick'],$config['duracion_sesion']);
+			setcookie('session',$pass_db,$config['duracion_sesion']);
+			setcookie('es_user',TRUE,$config['duracion_sesion']);
+			header('Location: ./?regresar=1');
 		}
 		else{
 			plantilla(incluir_html($cont,'pass_mal'));
@@ -77,7 +98,7 @@ function conectar(){
 }
 
 function registro(){
-	global $es_user,$seccion;
+	global $link,$es_user,$seccion;
 	if(!$es_user){
 		$cont = [
 				 'seccion' => $seccion,
@@ -92,33 +113,58 @@ function registro(){
 
 
 function registrado(){
-	global $es_user,$seccion;
+	global $es_user,$seccion,$config;
 	if(!$es_user){
-		$cont = [
-				 'seccion' => $seccion,
-				 'atras' => _USER_ATRAS,
-				 'registrado' => _USER_REGISTRADO,
-				];
-		if($_POST['pass'] != $_POST['pass_confirm']){
-		$cont = [
-				 'pass_error' => _USER_ERROR_PASS_NO_COINCIDE,
-				 'atras' => _USER_ATRAS,
-				];
-			plantilla(incluir_html($cont,'pass_nocoincide'));
-		}
-		else{
-			$nick=$_POST['nick'];
-			$pass=encriptar($_POST['pass']);
-			$email=serialize($_POST['email']);
-			$result=mysql_query("INSERT INTO ".$prefix."usuarios values ('','".escapa($nick)."','".escapa($pass)."','".escapa($email)."','1')");
-			if($result!=FALSE){
-				plantilla(incluir_html($cont,'registrado'));
+	
+		$result1=query("SELECT * from ".$config['prefix']."usuarios WHERE user='".escapa($_POST['nick'])."' ");
+		$row1=mysqli_fetch_object($result1);
+		mysqli_free_result($result1);
+		if(strcmp($row1->user,$_POST['nick'])!=0){
+			$result1=query("SELECT * from ".$config['prefix']."usuarios WHERE email='".escapa(serialize($_POST['email']))."' ");
+			$row1=mysqli_fetch_object($result1);
+			mysqli_free_result($result1);
+			if(strcmp(unserialize($row1->email),$_POST['email'])!=0){
+		
+				$cont = [
+					'seccion' => $seccion,
+					'atras' => _USER_ATRAS,
+					'registrado' => _USER_REGISTRADO,
+					];
+				if($_POST['pass'] != $_POST['pass_confirm']){
+					$cont = [
+						'pass_error' => _USER_ERROR_PASS_NO_COINCIDE,
+						'atras' => _USER_ATRAS,
+						];
+					plantilla(incluir_html($cont,'pass_nocoincide'));
+				}
+				else{
+					$nick=$_POST['nick'];
+					$pass=encriptar($_POST['pass']);
+					$email=serialize($_POST['email']);
+					$result=query("INSERT INTO ".$config['prefix']."usuarios values ('','".escapa($nick)."','".escapa($pass)."','".escapa($email)."','','','1')");
+					if($result===TRUE){
+						plantilla(incluir_html($cont,'registrado'));
+					}
+					else{
+						echo "Error de conexion al insertar. ".mysqli_error();
+					}
+					mysqli_free_result($result);
+				}
 			}
 			else{
-				echo "Error de conexion";
+				$cont = [
+					'mail_existe' => _USER_ERROR_MAIL_EXISTE,
+					'atras' => _USER_ATRAS,
+					];
+				plantilla(incluir_html($cont,'mail_existe'));
 			}
-			mysql_free_result($result);
-			
+		}
+		else{
+			$cont = [
+					'user_existe' => _USER_ERROR_USER_EXISTE,
+					'atras' => _USER_ATRAS,
+					];
+				plantilla(incluir_html($cont,'user_existe'));
 		}
 	}
 	else{
@@ -144,6 +190,13 @@ case "registrado":
 	break;
 case "informacion":
 	informacion();
+	break;
+case "editar":
+	editar_informacion();
+	break;
+case "perfil_editado":
+	informacion_editada();
+	break;
 
 }
 

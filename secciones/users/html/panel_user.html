@@ -1,6 +1,19 @@
-<div>Bienvenido est&aacute;s conectado como: $cont[nick]</div>
-<div>
-	<form method="post" action="./?seccion=users&amp;accion=desconectar">
-	<div><input type="submit" value="Desconectar"></div>
+<div>Bienvenido $cont[nick]</div>
+<article style="border-radius:5px;background-color: rgba(0, 0, 0, 0.5);padding:5px;">
+	<div style="margin:5px;">
+	<p>Informaci&oacute;n de usuario</p>
+	<img src="./images/users/avatars/$cont[avatar]" width="150" style="float:left;border-radius:3px;margin-right:5px;">
+	<b>Nickname:</b> $cont[nick]<br>
+	<b>Email:</b> $cont[email]<br>
+	<b>Rango:</b> $cont[rango]<br>
+	<div class="limpiarizq"></div>
+	</div>
+</article>
+<div style="margin-top:10px">
+	
+	<form method="post" action="./?seccion=$cont[seccion]&amp;accion=desconectar">
+	<b><a href="./?seccion=$cont[seccion]&amp;accion=editar&amp;id=$cont[uid]">Editar Perfil</a></b>
+	<input type="submit" value="Desconectar">
+	</form>
 
 </div>
