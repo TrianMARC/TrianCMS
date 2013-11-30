@@ -6,7 +6,7 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function obtener_seccion(){
-	global $link,$seccion,$seccion_pred;
+	global $seccion,$seccion_pred;
 
 	if(!$_GET['seccion']) $seccion=$seccion_pred;
 	else $seccion=$_GET['seccion'];
@@ -32,15 +32,15 @@ function insertar_mime($mime,$formato){
 
 }
 function comprobar_usuario(){
-	global $link,$es_user,$tu_cuenta,$es_admin;
+	global $link,$es_user,$tu_cuenta,$es_admin,$config;
 	
 	if($_COOKIE['es_user']==TRUE){
-		$result = mysqli_query($link,"SELECT * FROM ".$prefix."usuarios WHERE user='".escapa($_COOKIE['user'])."' ");
+		$result = mysqli_query($link,"SELECT * FROM ".$config['prefix']."usuarios WHERE user='".escapa($_COOKIE['user'])."' ");
 		$row = mysqli_fetch_object($result);
 		mysqli_free_result($result);
 		if(strcmp($_COOKIE['session'],$row->pass)==0){
 			if(intval($row->rango) >= 2) 
-			$es_admin=TRUE;
+				$es_admin=TRUE;
 			else
 				$es_admin=FALSE;
 			$tu_cuenta['usuario'] = $row->user;
@@ -67,22 +67,23 @@ function comprobar_cookies(){
 	$usar_cookies=$_COOKIE['cookies_acept'];
 	if($usar_cookies==FALSE){
 		$mostrar_cookies=TRUE;
+		$url = $_SERVER['HTTP_REFERER'];
 	}
+	return $url;
 	
 }
-function cookies_comprobadas(){
-	global $usar_cookies,$cook_com,$cookies;
+function cookies_comprobadas($url){
+	global $usar_cookies,$cookies;
 	
 	$cookies=$_POST['cookiesaceptadas'];
 	if($cookies==1){
-		$cook_com = TRUE;
+	
 		setcookie('cookies_acept',TRUE,time()+3600*24);
-		header('Location: ./');
+		
+		header('Location: '.$url);
 	
 	}
-	else{
-		if ($cookies!=0) $cook_com = TRUE;
-	}
+	
 }
 
 function incluir_html($cont,$html){
@@ -135,10 +136,10 @@ function obtener_idioma($lugar,$clase,$tipo = NULL)
   	global $config;
 
     if ($clase == 0) {
-		if (file_exists('./language/' . $config['idioma'] . '/blocks/' . $lugar . '.php'))
-    		@include_once('./language/' . $config['idioma'] . '/blocks/' . $lugar . '.php');
+		if (file_exists('./language/' . $config['idioma'] . '/bloques/' . $lugar . '.php'))
+    		@include_once('./language/' . $config['idioma'] . '/bloques/' . $lugar . '.php');
         else
-    		@include_once('./language/' . $config['idioma'] . '/blocks/' . $lugar . '.php');
+    		@include_once('./language/' . $config['idioma'] . '/bloques/' . $lugar . '.php');
 	} else if ($clase == 1) {
 		if (file_exists('./language/' . $config['idioma'] . '/secciones/' . $lugar . '/' . $tipo . '.php'))
     		@include_once('./language/' . $config['idioma'] . '/secciones/' . $lugar . '/' . $tipo . '.php');
