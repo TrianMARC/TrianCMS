@@ -4,12 +4,13 @@ if (!defined('Verificado'))
 	
 function plantilla($modulo,$pagetitle = NULL,$keywords = NULL,$description = NULL,$extra = NULL)
 {
-	global $seccion,$es_user,$config,$tu_cuenta,$regresar,$mostrar_cookies;
+	global $seccion,$es_user,$es_admin,$config,$tu_cuenta,$regresar,$mostrar_cookies;
 	
 	$mostrar = [
 			"template" => $config['template'],
 			'sitename' => $config['sitename'],
-			'user' => ($es_user) ? '&nbsp;&nbsp;' . _BIENVENIDO . '<b> ' . $tu_cuenta['usuario'] . '</b>!' : '&nbsp;&nbsp;' . _BIENVENIDO . ' Invitado!',
+			'user' => ($es_user) ?  '&nbsp;&nbsp;' . _BIENVENIDO . '<b> ' . $tu_cuenta['usuario'] . '</b>!': '&nbsp;&nbsp;' . _BIENVENIDO . ' Invitado!',
+			'admin' => ($es_admin) ? '&nbsp;&nbsp;(<a href="./?seccion=admin">'. _ADMINISTRAR .'</a>)' : '',
 			'modulo' => $modulo,
 			'pagetitle' => ' || '.$pagetitle,
 	];

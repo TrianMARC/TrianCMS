@@ -25,7 +25,8 @@ function informacion(){
 	plantilla(incluir_html($cont,'ver_informacion'));
 	}
 	else {
-		$cont['error'] = _USUARIO_INFORMACION_ERROR;
+		$cont['error'] = _USER_INFORMACION_ERROR;
+		$cont['atras'] = _USER_ATRAS;
 		plantilla(incluir_html($cont,'ver_informacion_error'));
 	}
 	
@@ -42,22 +43,28 @@ function editar_informacion(){
 		$cont = [
 				'seccion' => $seccion,
 				'uid' => $row->id,
-				'c_user' => _USUARIO_CAMPO_USUARIO,
+				'c_user' => _USER_CAMPO_USUARIO,
+				'c_user_desc' => _USER_CAMPO_USUARIO_DESC,
 				'user' => $row->user,
-				'c_email' => _USUARIO_CAMPO_EMAIL,
+				'c_email' => _USER_CAMPO_EMAIL,
+				'c_email_desc' => _USER_CAMPO_EMAIL_DESC,
 				'email' => unserialize($row->email),
-				'c_pass' => _USUARIO_CAMPO_PASS,
-				'c_pass_conf' => _USUARIO_CAMPO_PASS_CONFIRMAR,
+				'c_pass' => _USER_CAMPO_PASS,
+				'c_pass_desc' => _USER_CAMPO_PASS_DESC,
+				'c_pass_conf' => _USER_CAMPO_PASS_CONFIRMAR,
 				'enviar' => _ENVIAR,
 				'atras' => _USER_ATRAS,
 				'guardar' => _GUARDAR,
-				'c_avatar' => _USUARIO_CAMPO_AVATAR,
+				'c_avatar' => _USER_CAMPO_AVATAR,
+				'c_avatar_desc' => _USER_CAMPO_AVATAR_DESC,
+				'c_avatar_actual' => _USER_CAMPO_AVATAR_ACTUAL,
+				'avatar' => $row->avatar,
 				'avatar_max' => $config['avatar_max'],
+				'avatar_max_desc' => $config['avatar_max']/1024 .' KB',
 		];	 
 		plantilla(incluir_html($cont,editar_perfil));
 	}
 	else header('Location: ./?seccion='.$seccion);
-
 }
 
 function informacion_editada(){
@@ -71,27 +78,32 @@ function informacion_editada(){
 	$avatar_si=FALSE;
 	$nombre_avatar='';
 	$uploaddir = $config['ruta'].'/images/users/avatars/';
-	
-	if(strcmp($tipo,'image/gif')==0) $nombre_avatar = $tu_cuenta['usuario'].'.gif';
-	elseif(strcmp($tipo,'image/jpg')==0) $nombre_avatar = $tu_cuenta['usuario'].'.jpg';
-	elseif(strcmp($tipo,'image/jpeg')==0) $nombre_avatar = $tu_cuenta['usuario'].'.jpeg';
-	elseif(strcmp($tipo,'image/png')==0) $nombre_avatar = $tu_cuenta['usuario'].'.png';
-	else plantilla("error");
-	
-	$uploadfile = $uploaddir.$nombre_avatar;
 	$cont = [
-				'perfil_editado' => _USER_PERFIl_EDITADO_CORRECTAMENTE,
-				'atras' => _USER_ATRAS,
-				'volver' => _USER_VOLVER_AL_INICIO,
-				'seccion' => $seccion,
-			];
+					'perfil_editado' => _USER_PERFIl_EDITADO_CORRECTAMENTE,
+					'atras' => _USER_ATRAS,
+					'volver' => _USER_VOLVER_INICIO,
+					'seccion' => $seccion,
+				];
 	
-	if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadfile)) {
-			if($_FILES['avatar']['size'] == 0) $avatar_si=FALSE;
-			else $avatar_si=TRUE;			
-		}
-	else plantilla("¡Posible ataque de carga de archivos!\n");
+	if($_FILES['avatar']['size'] != 0){
+		if(strcmp($tipo,'image/gif')==0) $nombre_avatar = $tu_cuenta['usuario'].'.gif';
+		elseif(strcmp($tipo,'image/jpg')==0) $nombre_avatar = $tu_cuenta['usuario'].'.jpg';
+		elseif(strcmp($tipo,'image/jpeg')==0) $nombre_avatar = $tu_cuenta['usuario'].'.jpeg';
+		elseif(strcmp($tipo,'image/png')==0) $nombre_avatar = $tu_cuenta['usuario'].'.png';
+		else plantilla("error");
 		
+		$uploadfile = $uploaddir.$nombre_avatar;
+		
+		$result=mysqli_query($link,"SELECT * FROM ".$config['prefix']."usuarios WHERE id='".$id."' ");
+		$row=mysqli_fetch_object($result);
+		mysqli_free_result($result);
+		
+		if(file_exists('./images/users/avatars/'.$row->avatar)) unlink($config['ruta'].'/images/users/avatars/'.$row->avatar);
+		if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadfile))	$avatar_si=TRUE;
+		else plantilla("¡Posible ataque de carga de archivos!\n");
+	}
+	else	$avatar_si=FALSE;
+
 	if(strcmp($pass,'')==0){
 		if($avatar_si==TRUE){
 			$result=query("UPDATE ".$config['prefix']."usuarios SET email='".escapa($email)."', avatar='".escapa($nombre_avatar)."' WHERE id='".escapa($id)."' ");

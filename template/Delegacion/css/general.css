@@ -27,3 +27,23 @@
 	margin-top:30px;
 
 }
+
+/*GENERAL*/
+.img_avatar{
+
+	width:100px;
+	border-radius: 5px;
+
+}
+
+
+/*Edicion de perfil*/
+.label_campo {
+	float:left;
+	width:475px;
+	margin-bottom:20px;
+}
+
+.label_campo span {
+	font-size:12px;
+}
