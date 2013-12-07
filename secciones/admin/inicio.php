@@ -64,6 +64,26 @@ function obtener_header_admin(){
 }
 
 /********************************************************************************************************
+	Funcion: obtener_header_admin()																					
+	Descripcion: Carga el menu para poder acceder a todas las opciones del panel de administración.
+	Parametros:			
+																			
+*********************************************************************************************************/
+
+function obtener_header_admin_articulos(){
+	global $seccion,$config;
+	if($config['rewrite']!=1){
+	$header='<div>Control Art&iacute;culos: || <a style="text-decoration:none" href="#">A&ntilde;adir Articulo</a> || <a style="text-decoration:none" href="./?seccion='.$seccion.'&amp;accion=articulos">Ver Articulos</a> || </div>';
+	}
+	else{
+		$header='<div>Control Art&iacute;culos: || <a style="text-decoration:none" href="#">A&ntilde;adir Articulo</a> || <a style="text-decoration:none" href="./'.$seccion.'-articulos.html">Ver Articulos</a> || </div>';
+
+	}
+	return $header;
+
+}
+
+/********************************************************************************************************
 	Funcion: admin_articulos()																				
 	Descripcion: Obtiene un listado en una tabla todos los articulos de la base de datos y dá 
 				 la opcion de editarlos y borrarlos.
@@ -84,6 +104,7 @@ function admin_articulos(){
 		else{
 			
 			$modulo = obtener_header_admin();
+			$modulo .= '<hr>'.obtener_header_admin_articulos();
 			
 			$modulo .= '<br><table style="font-size:14px;text-align:center;">
 							<tr>
@@ -95,15 +116,15 @@ function admin_articulos(){
 								<th> </th>
 							</tr>';
 			$result=query("SELECT a.id,a.titulo,c.nombre,s.seccion,u.user FROM ".$config['prefix']."usuarios u,".$config['prefix']."articulos a,
-			".$config['prefix']."categoria c,".$config['prefix']."secciones s WHERE a.uid=u.id AND a.sid=s.sid AND a.cid=c.id ");
+			".$config['prefix']."categoria c,".$config['prefix']."articulos_seccion a_s ,".$config['prefix']."secciones s WHERE a.uid=u.id AND a.id=a_s.aid AND s.sid=a_s.sid AND a.cid=c.id ");
 			while($row=mysqli_fetch_object($result)){
 				if($config['rewrite']!=1){
-					$url_edit='./?seccion=admin&accion=editar_articulo&id='.$row->id;
-					$url_borrar='./?seccion=admin&accion=borrar_articulo&id='.$row->id;
+					$url_edit='./?seccion='.$seccion.'&amp;accion=editar_articulo&amp;id='.$row->id;
+					$url_borrar='./?seccion='.$seccion.'&amp;accion=borrar_articulo&amp;id='.$row->id;
 				}
 				{
-					$url_edit='./admin-editar_articulo-'.$row->id;
-					$url_borrar='./admin-borrar_articulo-'.$row->id;
+					$url_edit='./'.$seccion.'-editar_articulo-'.$row->id.'.html';
+					$url_borrar='./'.$seccion.'-borrar_articulo-'.$row->id.'.html';
 				}
 				$modulo .= '
 							<tr>
@@ -121,8 +142,6 @@ function admin_articulos(){
 			mysqli_free_result($result);
 			$modulo .= '</table>';
 			plantilla($modulo,'Administrar Art&iacute;culos');
-		
-		
 		}
 	}
 
@@ -149,25 +168,62 @@ function editar_articulo(){
 			header('Location: ./');
 		}
 		else{
+			$header = obtener_header_admin();
 			$aid= $_GET['id'];
-			$result=query("SELECT a.*, c.nombre, c.imagen as cat_img, s.seccion FROM ".$config['prefix']."articulos a,".$config['prefix']."categoria c,".$config['prefix']."secciones s WHERE s.sid=a.id AND a.id='".$uid."' AND a.cid = c.id ");
+			$result=query("SELECT a.*, c.nombre, c.imagen as cat_img FROM ".$config['prefix']."articulos a , ".$config['prefix']."categoria c WHERE a.id='".$aid."' AND a.cid = c.id ");
 			$row=mysqli_fetch_object($result);
 			mysqli_free_result($result);
 			$cont = [
 					'seccion' => $seccion,
 					'enviar' => _ENVIAR,
-					'categoria_n' => $row->nombre,
-					'categoria_i' => $row->cat_img,
+					'aid' => $aid,
+					'campo_categoria' => _ADMIN_ARTICULOS_CATEGORIA,
+					'campo_categoria_desc' => _ADMIN_ARTICULOS_CATEGORIA_DESC,
+					'campo_titulo' => _ADMIN_ARTICULOS_TITULO,
+					'campo_titulo_desc' => _ADMIN_ARTICULOS_TITULO_DESC,
 					'titulo' => unserialize($row->titulo),
+					'campo_imagen' => _ADMIN_ARTICULOS_IMAGEN,
+					'campo_imagen_desc' => _ADMIN_ARTICULOS_IMAGEN_DESC,
+					'campo_imagen_actual' => _ADMIN_ARTICULOS_IMAGEN_ACTUAL,
 					'imagen' => $row->imagen,
+					'campo_resumen' => _ADMIN_ARTICULOS_RESUMEN,
+					'campo_resumen_desc' => _ADMIN_ARTICULOS_RESUMEN_DESC,
 					'resumen' => unserialize($row->resumen),
+					'campo_texto' => _ADMIN_ARTICULOS_TEXTO,
+					'campo_texto_desc' => _ADMIN_ARTICULOS_TEXTO_DESC,
 					'texto' => unserialize($row->contenido),
-					'seccion_a' => $row->seccion,					
+					'campo_seccion' => _ADMIN_ARTICULOS_SECCIONES,
+					'campo_seccion_desc' => _ADMIN_ARTICULOS_SECCIONES_DESC,
+					'header' => $header,
 			];
+			$cont['categorias'] = '<select name="categoria">';
+			$result=query("SELECT * FROM ".$config['prefix']."categoria ");
+			while($row2=mysqli_fetch_object($result)){
+				if(strcmp($row2->nombre,$row->nombre) == 0){
+					$cont['categorias'] .='<option value="'.$row2->nombre.'" selected>'.$row2->nombre.'</option>';
+				}else{
+					$cont['categorias'] .='<option value="'.$row2->nombre.'">'.$row2->nombre.'</option>';
+				}
+			};		
+			mysqli_free_result($result);
+			$cont['categorias'] .= '</select>';
 			
-			plantilla(incluir_html($cont,editar_articulo),'Editar Art&iacute;culo');
-		
-		
+			$result2=query("SELECT * FROM ".$config['prefix']."articulos_seccion WHERE aid = '".$aid."' ");
+			$cont['secciones'] = '';
+			while($row4=mysqli_fetch_object($result2)){
+				$id[$row4->sid] = $row4->sid;
+			};
+			mysqli_free_result($result2);	
+			$result=query("SELECT * FROM ".$config['prefix']."secciones ");
+			while($row3=mysqli_fetch_object($result)){
+				if($row3->sid == $id[$row3->sid]){
+					$cont['secciones'] .='<input type="checkbox" value="'.$row3->seccion.'" checked>'.$row3->seccion.'</option>';
+				}else{
+					$cont['secciones'] .='<input type="checkbox" value="'.$row3->seccion.'">'.$row3->seccion.'</option>';
+				}
+			};		
+			mysqli_free_result($result);						
+			plantilla(incluir_html($cont,editar_articulo),'Editar Art&iacute;culo');		
 		}
 	}
 }
