@@ -9,7 +9,7 @@ function principal(){
 				'cabecera' => _PORTADA_ULTIMOS_ARTICULOS,
 			];
 	$modulo .= incluir_html($cont,'articulos_cabecera');
-	$result = mysqli_query($link,"SELECT a.*, b.*, c.* FROM ".$config['prefix']."articulos a,".$config['prefix']."usuarios b,".$config['prefix']."secciones c WHERE a.uid=b.id AND a.sid=c.sid ");
+	$result = mysqli_query($link,"SELECT a_s.aid, a.*, b.*, c.* FROM ".$config['prefix']."articulos a,".$config['prefix']."usuarios b,".$config['prefix']."secciones c, ".$config['prefix']."articulos_seccion a_s WHERE a.uid=b.id AND a.id=a_s.aid AND c.sid = a_s.sid AND c.seccion = '".$seccion."'");
 	while($row=mysqli_fetch_object($result)){
 		if($seccion == $row->seccion){
 			$cont = [
@@ -20,6 +20,7 @@ function principal(){
 				'escritor' => $row->user,
 				'uid' => $row->id,
 				'leermas' => _PORTADA_ARTICULO_LEER,
+				'url_perfil' => ($config['rewrite']==1) ? './users-informacion-'.$row->id.'.html' : './?seccion=users&amp;accion=informacion&amp;id='.$row->id,
 			];
 			if(!$es_user){
 				$modulo .= incluir_html($cont,'articulo');
@@ -29,7 +30,8 @@ function principal(){
 					$modulo .= incluir_html($cont,'articulo');
 				}
 				else{
-					$cont['editar']='<div class="editar_articulo"><a href="#"><img src=./images/acciones/editar.png title="Editar" alt="editar" width="16px"></a></div>';
+					if($config['rewrite']!=1) $cont['editar']='<div class="editar_articulo"><a href="./?seccion=admin&amp;accion=editar_articulo&amp;id='.$row->aid.'"><img src=./images/acciones/editar.png title="Editar" alt="editar" width="16px"></a></div>';
+					else $cont['editar']='<div class="editar_articulo"><a href="./admin-editar_articulo-'.$row->aid.'.html"><img src=./images/acciones/editar.png title="Editar" alt="editar" width="16px"></a></div>';
 					$modulo .= incluir_html($cont,'articulo');
 				}
 			}

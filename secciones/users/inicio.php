@@ -3,7 +3,7 @@ if (!defined('Verificado'))
     die("Acceso no permitido");
 
 function principal(){
-	global $link,$es_user,$seccion,$usar_cookies,$tu_cuenta;
+	global $link,$es_user,$seccion,$usar_cookies,$tu_cuenta,$config;
 	
 	if(!$es_user){
 		$titulo = 'Con&eacute;ctate';
@@ -14,6 +14,8 @@ function principal(){
 	
 			$cont = [
 						'seccion' => $seccion,
+						'action' => ($config['rewrite']==1) ? './'.$seccion.'-conectar.html' : './?seccion='.$seccion.'&amp;accion=conectar',
+						'url_reg' => ($config['rewrite']==1) ? './'.$seccion.'-registro.html' : './?seccion='.$seccion.'&amp;accion=registro',
 					];
 			plantilla(incluir_html($cont,'conexion'),$titulo);
 		
@@ -29,11 +31,13 @@ function principal(){
 		mysqli_free_result($result2);
 		$cont = [
 				 'nick' => $user,
-				 'uid' => $row->id,
 				 'avatar' => $row->avatar,
 				 'seccion' => $seccion,
 				 'email' => unserialize($row->email),
 				 'rango' => $row2->nombre,
+				 'action' => ($config['rewrite']==1) ? './'.$seccion.'-desconectar.html' : './?seccion='.$seccion.'&amp;accion=desconectar',
+				 'url_edit' => ($config['rewrite']==1) ? './'.$seccion.'-editar-'.$row->id.'.html' : './?seccion='.$seccion.'&amp;accion=editar&amp;id='.$row->id.'',
+					
 				];
 		plantilla(incluir_html($cont,'panel_user'),$titulo);		
 	 }
@@ -98,11 +102,12 @@ function conectar(){
 }
 
 function registro(){
-	global $link,$es_user,$seccion;
+	global $link,$es_user,$seccion,$config;
 	if(!$es_user){
 		$cont = [
 				 'seccion' => $seccion,
 				 'atras' => _USER_ATRAS,
+				 'action' => ($config['rewrite']==1) ? './'.$seccion.'-registrado.html' : './?seccion='.$seccion.'&amp;accion=registrado',
 				];
 		plantilla(incluir_html($cont,'registro'));
 	}
