@@ -17,6 +17,7 @@ function informacion(){
 			 'user' => $row->user,
 			 'avatar' => '<img src="./images/users/avatars/'.$row->avatar.'" width="100">',
 			 'rango' => $row2->nombre,
+			 
 		];
 	if($row->mostrar_email == 1) $cont['email'] = unserialize($row->email);
 	if($es_admin){
@@ -61,6 +62,7 @@ function editar_informacion(){
 				'avatar' => $row->avatar,
 				'avatar_max' => $config['avatar_max'],
 				'avatar_max_desc' => $config['avatar_max']/1024 .' KB',
+				'action' => ($config['rewrite']==1) ? './'.$seccion.'-perfil_editado.html' : './?seccion='.$seccion.'&amp;accion=perfil_editado',
 		];	 
 		plantilla(incluir_html($cont,editar_perfil));
 	}

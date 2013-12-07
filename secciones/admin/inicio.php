@@ -1,7 +1,21 @@
 <?php 
 
+/* TrianCMS ~ Content Management System
+Desarrollado por Víctor Sánchez del Río ( http://twitter.com/trianmarc ) 
+Víctor Sánchez del Río © Todos los derechos reservados.
+Proyecto desarrollado para Uname Junior Empresa
+*/
+
+
 if (!defined('Verificado'))
     die("Acceso no permitido");
+
+/********************************************************************************************************
+	Funcion: principal()																					
+	Descripcion: Función encargada de cargar el panel global de control de la administración del sitio.
+	Parametros:			
+																			
+*********************************************************************************************************/
 
 function principal(){
 	global $es_user,$seccion,$tu_cuenta,$es_admin;
@@ -25,15 +39,37 @@ function principal(){
 	 }
 }
 
+/********************************************************************************************************
+	Funcion: obtener_header_admin()																					
+	Descripcion: Carga el menu para poder acceder a todas las opciones del panel de administración.
+	Parametros:			
+																			
+*********************************************************************************************************/
+
 function obtener_header_admin(){
-	global $seccion;
+	global $seccion,$config;
+	if($config['rewrite']!=1){
 	$header='<div>Panel de Control del Sitio</div>
 			<div>|| <a style="text-decoration:none" href="./?seccion='.$seccion.'&amp;accion=preferencias">Preferencias</a> || Secciones || 
 			<a style="text-decoration:none" href="./?seccion='.$seccion.'&amp;accion=articulos">Articulos</a> || </div>';
+	}
+	else{
+		$header='<div>Panel de Control del Sitio</div>
+			<div>|| <a style="text-decoration:none" href="./'.$seccion.'-preferencias.html">Preferencias</a> || Secciones || 
+			<a style="text-decoration:none" href="./'.$seccion.'-articulos.html">Articulos</a> || </div>';
 
+	}
 	return $header;
 
 }
+
+/********************************************************************************************************
+	Funcion: admin_articulos()																				
+	Descripcion: Obtiene un listado en una tabla todos los articulos de la base de datos y dá 
+				 la opcion de editarlos y borrarlos.
+	Parametros:			
+																			
+*********************************************************************************************************/
 
 function admin_articulos(){
 
@@ -61,6 +97,14 @@ function admin_articulos(){
 			$result=query("SELECT a.id,a.titulo,c.nombre,s.seccion,u.user FROM ".$config['prefix']."usuarios u,".$config['prefix']."articulos a,
 			".$config['prefix']."categoria c,".$config['prefix']."secciones s WHERE a.uid=u.id AND a.sid=s.sid AND a.cid=c.id ");
 			while($row=mysqli_fetch_object($result)){
+				if($config['rewrite']!=1){
+					$url_edit='./?seccion=admin&accion=editar_articulo&id='.$row->id;
+					$url_borrar='./?seccion=admin&accion=borrar_articulo&id='.$row->id;
+				}
+				{
+					$url_edit='./admin-editar_articulo-'.$row->id;
+					$url_borrar='./admin-borrar_articulo-'.$row->id;
+				}
 				$modulo .= '
 							<tr>
 								<td>'.$row->id.'</td>
@@ -68,7 +112,7 @@ function admin_articulos(){
 								<td>'.$row->nombre.'</td>
 								<td>'.$row->user.'</td>
 								<td>'.$row->seccion.'</td>
-								<td><a href="#">'._ADMIN_ARTICULOS_EDITAR.'</a> | <a href="#">'._ADMIN_ARTICULOS_BORRAR.'</a></td>
+								<td><a href="'.$url_edit.'">'._ADMIN_ARTICULOS_EDITAR.'</a> | <a href="'.$url_borrar.'">'._ADMIN_ARTICULOS_BORRAR.'</a></td>
 							
 							</tr>	
 									
@@ -76,13 +120,56 @@ function admin_articulos(){
 			}
 			mysqli_free_result($result);
 			$modulo .= '</table>';
-			plantilla($modulo);
+			plantilla($modulo,'Administrar Art&iacute;culos');
 		
 		
 		}
 	}
 
 
+}
+
+
+/********************************************************************************************************
+	Funcion: editar_articulo()																					
+	Descripcion: Función que se encarga de cargar el formulario de edición de los articulos desde el panel de
+				 administración.
+	Parametros:			
+																			
+*********************************************************************************************************/
+
+function editar_articulo(){
+	global $config,$es_admin,$es_user;
+	
+	if(!$es_user){
+		header('Location: ./?seccion=users');
+	}
+	else {
+		if(!$es_admin){
+			header('Location: ./');
+		}
+		else{
+			$aid= $_GET['id'];
+			$result=query("SELECT a.*, c.nombre, c.imagen as cat_img, s.seccion FROM ".$config['prefix']."articulos a,".$config['prefix']."categoria c,".$config['prefix']."secciones s WHERE s.sid=a.id AND a.id='".$uid."' AND a.cid = c.id ");
+			$row=mysqli_fetch_object($result);
+			mysqli_free_result($result);
+			$cont = [
+					'seccion' => $seccion,
+					'enviar' => _ENVIAR,
+					'categoria_n' => $row->nombre,
+					'categoria_i' => $row->cat_img,
+					'titulo' => unserialize($row->titulo),
+					'imagen' => $row->imagen,
+					'resumen' => unserialize($row->resumen),
+					'texto' => unserialize($row->contenido),
+					'seccion_a' => $row->seccion,					
+			];
+			
+			plantilla(incluir_html($cont,editar_articulo),'Editar Art&iacute;culo');
+		
+		
+		}
+	}
 }
 
 
@@ -93,6 +180,10 @@ default:
 
 case "articulos":
 	admin_articulos();
+	break;
+
+case "editar_articulo":
+	editar_articulo();
 	break;
 
 }

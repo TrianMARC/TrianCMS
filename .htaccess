@@ -1,0 +1,6 @@
+Options +FollowSymLinks
+RewriteEngine on
+Rewriterule ^(.*)-(.*)-(.*).html$ index.php?seccion=$1&accion=$2&id=$3 [L]
+Rewriterule ^(.*)-(.*).html$ index.php?seccion=$1&accion=$2 [L]
+Rewriterule ^(.*).html$ index.php?seccion=$1 [L]
+
