@@ -50,7 +50,7 @@ function comprobar_usuario(){
 		}
 		else{
 			unset($_COOKIE['user']);
-			unset($_COOKIE['pass']);
+			unset($_COOKIE['session']);
 			setcookie('user', null, -1);
 			setcookie('session', null, -1);
 			setcookie('es_user',null,-1);
