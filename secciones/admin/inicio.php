@@ -158,7 +158,7 @@ function admin_articulos(){
 *********************************************************************************************************/
 
 function editar_articulo(){
-	global $config,$es_admin,$es_user;
+	global $config,$es_admin,$es_user,$seccion;
 	
 	if(!$es_user){
 		header('Location: ./?seccion=users');
@@ -195,7 +195,11 @@ function editar_articulo(){
 					'campo_seccion' => _ADMIN_ARTICULOS_SECCIONES,
 					'campo_seccion_desc' => _ADMIN_ARTICULOS_SECCIONES_DESC,
 					'header' => $header,
+					'atras' => _ATRAS, 
 			];
+			if($config['rewrite']!=1) $cont['action'] = './?seccion='.$seccion.'&amp;accion=articulo_editado';
+			else $cont['action'] = './'.$seccion.'-articulo_editado.html';
+			
 			$cont['categorias'] = '<select name="categoria">';
 			$result=query("SELECT * FROM ".$config['prefix']."categoria ");
 			while($row2=mysqli_fetch_object($result)){
@@ -217,15 +221,94 @@ function editar_articulo(){
 			$result=query("SELECT * FROM ".$config['prefix']."secciones ");
 			while($row3=mysqli_fetch_object($result)){
 				if($row3->sid == $id[$row3->sid]){
-					$cont['secciones'] .='<input type="checkbox" value="'.$row3->seccion.'" checked>'.$row3->seccion.'</option>';
+					$cont['secciones'] .='<input type="checkbox" name="secciones[]" value="'.$row3->seccion.'" checked>'.$row3->seccion.'</option>';
 				}else{
-					$cont['secciones'] .='<input type="checkbox" value="'.$row3->seccion.'">'.$row3->seccion.'</option>';
+					$cont['secciones'] .='<input type="checkbox" name="secciones[]" value="'.$row3->seccion.'">'.$row3->seccion.'</option>';
 				}
 			};		
 			mysqli_free_result($result);						
 			plantilla(incluir_html($cont,editar_articulo),'Editar Art&iacute;culo');		
 		}
 	}
+}
+
+
+/********************************************************************************************************
+	Funcion: editar_articulo()																					
+	Descripcion: Función que encargada de recuperar los datos del formulario y tratarlos, para subirlos 
+				 posteriormente a la base de datos de la web.
+	Parametros:			
+																			
+*********************************************************************************************************/
+
+function articulo_editado(){
+	global $config,$es_admin,$es_user;
+	if(!$es_user){
+		header('Location: ./?seccion=users');
+	}
+	else {
+		if(!$es_admin){
+			header('Location: ./');
+		}
+		else{
+			$cat_n = $_POST['categoria'];	
+			$result=query("SELECT id FROM categoria WHERE nombre='".$cat_n."'");
+			$cat = mysqli_fetch_object($result);
+			mysqli_free_result($result);
+			$aid = $_POST['aid']; 
+			$tit = $_POST['titulo'];
+			$res = $_POST['resumen']; 
+			$txt = $_POST['texto']; 
+			$uploaddir = $config['ruta'].'/images/articulos/';
+			$imagen_si = FALSE;
+			//Comprobamos si se ha seleccionado alguna imagen para subir.
+			if($_FILES['img_articulo']['size'] != 0){
+				$mime = obtener_mime($_FILES['img_articulo']['type']);
+				$fich = $_FILES['img_articulo']['name'].'.'.$mime;
+				$uploadfile = $uploaddir.$fich;
+				
+				if (move_uploaded_file($_FILES['img_articulo']['tmp_name'], $uploadfile)){
+					$result=query("SELECT * FROM ".$config['prefix']."articulos WHERE id='".$aid."' ");
+					$row3=mysqli_fetch_object($result);
+					mysqli_free_result($result);
+					if(file_exists('./images/articulos/'.$row3->imagen)) unlink($config['ruta'].'/images/articulos/'.$row3->imagen);
+					$imagen_si=TRUE;
+				
+				}
+				else plantilla("¡Posible ataque de carga de archivos!\n");
+			}
+			//Comprobamos si hay secciones a mostrar seleccionadas
+			if(is_array($_POST['secciones'])){
+				$result=query("DELETE FROM articulos_seccion WHERE aid='".$aid."'");
+				mysqli_free_result($result);
+				foreach($_POST['secciones'] as $valor){
+					$sec[$valor]=$valor;
+					$result=query("SELECT sid FROM secciones WHERE seccion='".$valor."'");
+					$row = mysqli_fetch_object($result);
+					mysqli_free_result($result);
+					$result2=query("INSERT INTO articulos_seccion (aid,sid) VALUES ('".$aid."','".$row->sid."')");
+					mysqli_free_result($result);		
+				}
+				if($imagen_si){
+					$result=query("UPDATE articulos SET titulo='".escapa(serialize($tit))."', resumen='".escapa(serialize($res))."', contenido='".escapa(serialize($txt))."',
+					imagen='".escapa($fich)."', cid='".escapa($cat->id)."' WHERE id='".escapa($aid)."'");
+					mysqli_free_result($result);
+					plantilla(incluir_html($cont,'articulo_editado'),'Art&iacute;culo editado');
+				}
+				else {
+					$result=query("UPDATE articulos SET titulo='".escapa(serialize($tit))."', resumen='".escapa(serialize($res))."', contenido='".escapa(serialize($txt))."',
+					cid='".escapa($cat->id)."' WHERE id='".escapa($aid)."' ");
+					mysqli_free_result($result);
+					plantilla(incluir_html($cont,'articulo_editado'),'Art&iacute;culo editado');
+				}
+			}
+			else{
+				plantilla(incluir_html($cont,'error_no_seccion'),'Error, no hay secci&oacute;n seleccionada');
+			}
+			
+		}
+	}
+
 }
 
 
@@ -240,6 +323,10 @@ case "articulos":
 
 case "editar_articulo":
 	editar_articulo();
+	break;
+	
+case "articulo_editado":
+	articulo_editado();
 	break;
 
 }

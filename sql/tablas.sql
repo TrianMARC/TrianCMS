@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 01-12-2013 a las 16:47:16
+-- Tiempo de generación: 10-12-2013 a las 16:29:01
 -- Versión del servidor: 5.5.34
 -- Versión de PHP: 5.5.6-1+debphp.org~precise+2
 
@@ -16,47 +16,107 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
+-- --------------------------------------------------------
 
 --
--- Volcado de datos para la tabla `articulos`
+-- Estructura de tabla para la tabla `articulos`
 --
 
-INSERT INTO `articulos` (`id`, `titulo`, `resumen`, `contenido`, `imagen`, `cid`, `uid`, `sid`) VALUES
-(1, 's:18:"Articulo de prueba";', 's:50:"Este es un articulo para ver si se carga todo bien";', 's:251:"Este es un articulo para ver si se carga todo bien Este es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bien";', 'imagen.jpg', 1, 6, 1),
-(2, 's:18:"Articulo de prueba";', 's:50:"Este es un articulo para ver si se carga todo bien";', 's:251:"Este es un articulo para ver si se carga todo bien Este es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bienEste es un articulo para ver si se carga todo bien";', 'imagen.jpg', 1, 6, 1);
+CREATE TABLE IF NOT EXISTS `articulos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `titulo` text COLLATE utf8_spanish2_ci NOT NULL,
+  `resumen` text COLLATE utf8_spanish2_ci NOT NULL,
+  `contenido` longtext COLLATE utf8_spanish2_ci NOT NULL,
+  `imagen` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
+  `cid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
--- Volcado de datos para la tabla `categoria`
+-- Estructura de tabla para la tabla `articulos_seccion`
 --
 
-INSERT INTO `categoria` (`id`, `nombre`, `imagen`, `descripcion`) VALUES
-(1, 'Prueba', 'prueba.jpg', 'Categoria de prueba');
+CREATE TABLE IF NOT EXISTS `articulos_seccion` (
+  `aid` int(11) NOT NULL,
+  `sid` int(11) NOT NULL,
+  PRIMARY KEY (`aid`,`sid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+-- --------------------------------------------------------
 
 --
--- Volcado de datos para la tabla `secciones`
+-- Estructura de tabla para la tabla `categoria`
 --
 
-INSERT INTO `secciones` (`sid`, `seccion`, `bloques_centrales_sup`, `bloques_centrales_inf`, `bloques_laterales_der`, `bloques_laterales_izq`) VALUES
-(1, 'portada', 0, 0, 0, 0),
-(2, 'admin', 0, 0, 0, 0),
-(3, 'users', 0, 0, 0, 0);
+CREATE TABLE IF NOT EXISTS `categoria` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
+  `imagen` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
+  `descripcion` varchar(100) COLLATE utf8_spanish2_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
--- Volcado de datos para la tabla `usuarios`
+-- Estructura de tabla para la tabla `mimes`
 --
 
-INSERT INTO `usuarios` (`id`, `user`, `pass`, `email`, `mostrar_email`, `avatar`, `rango`) VALUES
-(6, 'TrianMARC', '$2y$07$a3sd5rsaf4/34fd3/1fg3u72CwN1d/dsu/iwkslmrQZlO9PRV9WHe', 's:21:"trianmarc91@gmail.com";', 0, 'TrianMARC.jpeg', 2),
-(7, 'kabe', '$2y$07$a3sd5rsaf4/34fd3/1fg3uU7ZsZ2iV7T75xtEY/oHvem7vTBLzg1S', 's:19:"kabecilla@gmail.com";', 0, 'nada.png', 1),
-(14, 'ernar', '$2y$07$a3sd5rsaf4/34fd3/1fg3utre.48iMpE/WJuRza.5WdnJXfIzKt2q', 's:21:"luismihtc89@gmail.com";', 0, 'ernar.jpeg', 1);
+CREATE TABLE IF NOT EXISTS `mimes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mime` varchar(30) COLLATE utf8_spanish2_ci NOT NULL,
+  `formato` varchar(10) COLLATE utf8_spanish2_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci AUTO_INCREMENT=7 ;
+
+-- --------------------------------------------------------
 
 --
--- Volcado de datos para la tabla `usuarios_rangos`
+-- Estructura de tabla para la tabla `secciones`
 --
 
-INSERT INTO `usuarios_rangos` (`id`, `nombre`) VALUES
-(1, 'Usuario'),
-(2, 'Administrador');
+CREATE TABLE IF NOT EXISTS `secciones` (
+  `sid` int(11) NOT NULL AUTO_INCREMENT,
+  `seccion` varchar(30) COLLATE utf8_spanish2_ci NOT NULL,
+  `bloques_centrales_sup` int(11) NOT NULL DEFAULT '0',
+  `bloques_centrales_inf` int(11) NOT NULL DEFAULT '0',
+  `bloques_laterales_der` int(11) NOT NULL DEFAULT '0',
+  `bloques_laterales_izq` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`sid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE IF NOT EXISTS `usuarios` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
+  `pass` varchar(80) COLLATE utf8_spanish2_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `mostrar_email` int(11) NOT NULL DEFAULT '0',
+  `avatar` varchar(30) COLLATE utf8_spanish2_ci NOT NULL DEFAULT 'nada.png',
+  `rango` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `User` (`user`,`email`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci AUTO_INCREMENT=15 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios_rangos`
+--
+
+CREATE TABLE IF NOT EXISTS `usuarios_rangos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(30) COLLATE utf8_spanish2_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci AUTO_INCREMENT=5 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
