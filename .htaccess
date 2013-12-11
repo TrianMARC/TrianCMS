@@ -1,6 +1,9 @@
 Options +FollowSymLinks
 RewriteEngine on
-Rewriterule ^(.*)-(.*)-(.*).html$ index.php?seccion=$1&accion=$2&id=$3 [L]
+Rewriterule ^(.*)-(.*)-(.*)-(.*).html$ index.php?seccion=$1&arch=$2&accion=$3&id=$4 [L]
+Rewriterule ^(.*)-(.*)-([0-9]+).html$ index.php?seccion=$1&accion=$2&id=$3 [L]
+Rewriterule ^(.*)-(.*)-(.*).html$ index.php?seccion=$1&arch=$2&accion=$3 [L]
+Rewriterule ^(.*)-([0-9]+).html$ index.php?seccion=$1&pagina=$2 [L]
 Rewriterule ^(.*)-(.*).html$ index.php?seccion=$1&accion=$2 [L]
 Rewriterule ^(.*).html$ index.php?seccion=$1 [L]
 

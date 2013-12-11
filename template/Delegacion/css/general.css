@@ -35,6 +35,27 @@
 	border-radius: 5px;
 
 }
+.pagina{
+	font-size:18px;
+	padding:5px;
+	background:#DADADA;
+	border-top:1px solid #777575;
+	border-bottom:1px solid #777575;
+	border-left:1px solid #777575;
+	
+	color: #FF0000;
+}
+
+.pagina:last-child{
+
+	border-right:1px solid #777575;
+}
+
+.pagina a{
+	text-decoration:none;
+	color: #777575;
+	padding:5px;
+}
 
 
 /*Edicion de perfil*/
@@ -47,3 +68,4 @@
 .label_campo span {
 	font-size:12px;
 }
+
