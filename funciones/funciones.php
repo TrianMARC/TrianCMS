@@ -151,11 +151,6 @@ function obtener_idioma($lugar,$clase,$tipo = NULL)
     		@include_once('./language/' . $config['idioma'] . '/global/' . $lugar . '.php');
         else
     		@include_once('./language/' . $config['idioma'] . '/global/' . $lugar . '.php');
-	} else if ($clase == 3) {
-		if (file_exists('./language/' . $config['idioma'] . '/plugins/' . $lugar . '.php'))
-    		@include_once('./language/' . $config['idioma'] . '/plugins/' . $lugar . '.php');
-        else
-    		@include_once('./language/' . $config['idioma'] . '/plugins/' . $lugar . '.php');
 	}
 }
 

@@ -115,6 +115,7 @@ function editar_articulo(){
 		}
 		else{
 			$header = obtener_header_admin();
+			$menu_art= obtener_header_admin_articulos();
 			$aid= $_GET['id'];
 			$result=query("SELECT a.*, c.nombre, c.imagen as cat_img FROM ".$config['prefix']."articulos a , ".$config['prefix']."categoria c WHERE a.id='".$aid."' AND a.cid = c.id ");
 			$row=mysqli_fetch_object($result);
@@ -141,6 +142,7 @@ function editar_articulo(){
 					'campo_seccion' => _ADMIN_ARTICULOS_SECCIONES,
 					'campo_seccion_desc' => _ADMIN_ARTICULOS_SECCIONES_DESC,
 					'header' => $header,
+					'menu_art' => $menu_art,
 					'atras' => _ATRAS, 
 			];
 			if($config['rewrite']!=1) $cont['action'] = './?seccion='.$seccion.'&amp;arch=articulos&amp;accion=articulo_editado';
@@ -276,6 +278,7 @@ function enviar_articulo(){
 		}
 		else{
 			$header = obtener_header_admin();
+			$menu_art= obtener_header_admin_articulos();
 			$cont = [
 					'seccion' => $seccion,
 					'enviar' => _ENVIAR,
@@ -293,6 +296,7 @@ function enviar_articulo(){
 					'campo_seccion' => _ADMIN_ARTICULOS_SECCIONES,
 					'campo_seccion_desc' => _ADMIN_ARTICULOS_SECCIONES_DESC,
 					'header' => $header,
+					'menu_art' => $menu_art,
 					'atras' => _ATRAS, 
 			];
 			if($config['rewrite']!=1) $cont['action'] = './?seccion='.$seccion.'&amp;arch=articulos&amp;accion=articulo_enviado';
